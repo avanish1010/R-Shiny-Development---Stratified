@@ -1,0 +1,81 @@
+---
+title: "2341423_stratifies"
+author: "Avanish Harlalka"
+date: "2025-12-16"
+output: html_document
+---
+```{r}
+# ---------------------------------------------
+# Stratified Sampling for Population Mean
+# Proportional, Neyman & Optimized Allocation
+# ---------------------------------------------
+
+# Number of strata
+L <- 4
+
+# Population size in each stratum
+N <- c(500, 300, 400, 800)
+
+# Variance within each stratum
+variance <- c(10, 15, 20, 12)
+S <- sqrt(variance)
+
+# Cost per observation in each stratum
+cost <- c(5, 8, 6, 7)
+
+# Time per observation in each stratum
+time <- c(2, 3, 4, 2)
+
+# Sampling bias
+bias <- 1
+
+# Desired variance of estimator
+V <- 5
+
+# Total population size
+N_total <- sum(N)
+
+# ---------------------------------------------
+# Total Sample Size
+# ---------------------------------------------
+numerator <- sum(N * S * sqrt(cost * time))^2
+n <- numerator / (V - bias^2)
+n_total <- ceiling(n)
+
+n_total
+
+# ---------------------------------------------
+# 1. Proportional Allocation
+# ---------------------------------------------
+n_prop <- ceiling(n_total * (N / N_total))
+n_prop
+
+# ---------------------------------------------
+# 2. Neyman Allocation
+# ---------------------------------------------
+n_neyman <- ceiling(n_total * (N * S) / sum(N * S))
+n_neyman
+
+# ---------------------------------------------
+# 3. Optimized Allocation
+# ---------------------------------------------
+n_opt <- ceiling(n_total * (N * S / sqrt(cost * time)) /
+                   sum(N * S / sqrt(cost * time)))
+n_opt
+
+# ---------------------------------------------
+# Plot Comparison
+# ---------------------------------------------
+allocation_matrix <- rbind(n_prop, n_neyman, n_opt)
+
+barplot(allocation_matrix,
+        beside = TRUE,
+        names.arg = paste("Stratum", 1:L),
+        legend.text = c("Proportional", "Neyman", "Optimized"),
+        main = "Comparison of Stratified Allocation Methods",
+        xlab = "Strata",
+        ylab = "Sample Size",
+        col = c("lightblue", "lightgreen", "lightcoral"))
+
+```
+
